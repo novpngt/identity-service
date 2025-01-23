@@ -1,5 +1,6 @@
 package com.spring.identity_service.controllers;
 
+import com.spring.identity_service.DTOs.ApiResponse;
 import com.spring.identity_service.DTOs.UserCreateRequest;
 import com.spring.identity_service.DTOs.UserUpdateRequest;
 import com.spring.identity_service.entities.User;
@@ -17,8 +18,10 @@ public class UserController {
     private UserService userService;
 
     @PostMapping()
-    User createUser(@RequestBody @Valid UserCreateRequest request) {
-        return userService.createUser(request);
+    ApiResponse<User, Void> createUser(@RequestBody @Valid UserCreateRequest request) {
+        ApiResponse<User, Void> apiResponse = new ApiResponse<>();
+        apiResponse.setData(userService.createUser(request));
+        return apiResponse;
     }
 
     @GetMapping
@@ -26,7 +29,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping ("/{userId}")
+    @GetMapping("/{userId}")
     User getUserById(@PathVariable("userId") String userId) {
         return userService.getUserById(userId);
     }
