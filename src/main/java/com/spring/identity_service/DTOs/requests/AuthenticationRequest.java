@@ -1,4 +1,4 @@
-package com.spring.identity_service.exceptions;
+package com.spring.identity_service.DTOs.requests;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ValidationError {
-    String field;
-    String message;
+public class AuthenticationRequest {
+    String username;
+    String password;
 }
