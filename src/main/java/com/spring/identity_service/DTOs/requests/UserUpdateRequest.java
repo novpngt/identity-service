@@ -1,22 +1,16 @@
-package com.spring.identity_service.entities;
+package com.spring.identity_service.DTOs.requests;
 
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
-@Entity
-@Table
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
+public class UserUpdateRequest {
     String username;
     String password;
     String firstName;

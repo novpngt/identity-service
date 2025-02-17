@@ -1,11 +1,15 @@
 package com.spring.identity_service.controllers;
 
-import com.spring.identity_service.DTOs.ApiResponse;
-import com.spring.identity_service.DTOs.UserCreateRequest;
-import com.spring.identity_service.DTOs.UserUpdateRequest;
+import com.spring.identity_service.DTOs.responses.ApiResponse;
+import com.spring.identity_service.DTOs.requests.UserCreateRequest;
+import com.spring.identity_service.DTOs.requests.UserUpdateRequest;
+import com.spring.identity_service.DTOs.responses.UserResponse;
 import com.spring.identity_service.entities.User;
 import com.spring.identity_service.services.UserService;
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +17,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
-    @Autowired
     private UserService userService;
 
     @PostMapping()
@@ -25,22 +30,30 @@ public class UserController {
     }
 
     @GetMapping
-    List<User> getAllUsers() {
-        return userService.getAllUsers();
+    ApiResponse getAllUsers() {
+        ApiResponse<List<User>, Void> apiResponse = new ApiResponse<>();
+        apiResponse.setData(userService.getAllUsers());
+        return apiResponse;
     }
 
     @GetMapping("/{userId}")
-    User getUserById(@PathVariable("userId") String userId) {
-        return userService.getUserById(userId);
+    ApiResponse getUserById(@PathVariable("userId") String userId) {
+        ApiResponse<UserResponse, Void> apiResponse = new ApiResponse<>();
+        apiResponse.setData(userService.getUserById(userId));
+        return apiResponse;
     }
 
     @PutMapping("/{userId}")
-    User updateUserById(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request) {
-        return userService.updateUser(userId, request);
+    ApiResponse updateUserById(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request) {
+        ApiResponse<UserResponse, Void> apiResponse = new ApiResponse<>();
+        apiResponse.setData(userService.updateUser(userId, request));
+        return apiResponse;
     }
 
     @DeleteMapping("/{userId}")
-    String deleteUserById(@PathVariable("userId") String userId) {
-        return userService.deleteUser(userId);
+    ApiResponse deleteUserById(@PathVariable("userId") String userId) {
+        ApiResponse<String, Void> apiResponse = new ApiResponse<>();
+        apiResponse.setData(userService.deleteUser(userId));
+        return apiResponse;
     }
 }

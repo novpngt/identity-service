@@ -1,13 +1,10 @@
 package com.spring.identity_service.exceptions;
 
-import com.spring.identity_service.DTOs.ApiResponse;
-import com.spring.identity_service.DTOs.ValidationError;
-import org.springframework.http.HttpStatus;
+import com.spring.identity_service.DTOs.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +38,7 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(ErrorCode.USER_VALIDATION_ERROR.getCode());
         apiResponse.setMessage(ErrorCode.USER_VALIDATION_ERROR.getMessage());
-        apiResponse.setError(userValidationErrors);
+        apiResponse.setErrors(userValidationErrors);
 
         return ResponseEntity.badRequest().body(apiResponse);
     }
