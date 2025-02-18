@@ -1,5 +1,7 @@
 package com.spring.identity_service.exceptions;
 
+import com.spring.identity_service.enums.ErrorCode;
+
 public class AppException extends RuntimeException{
 
     public AppException(ErrorCode errorCode) {

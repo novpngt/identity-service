@@ -2,6 +2,7 @@ package com.spring.identity_service.exceptions;
 
 import com.nimbusds.jose.JOSEException;
 import com.spring.identity_service.DTOs.responses.ApiResponse;
+import com.spring.identity_service.enums.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

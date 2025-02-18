@@ -1,4 +1,4 @@
-package com.spring.identity_service.exceptions;
+package com.spring.identity_service.enums;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
