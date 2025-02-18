@@ -3,6 +3,7 @@ package com.spring.identity_service.exceptions;
 import com.nimbusds.jose.JOSEException;
 import com.spring.identity_service.DTOs.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,10 +15,10 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(value = RuntimeException.class)
-    ResponseEntity<ApiResponse> runTimeExceptionHandler() {
+    ResponseEntity<ApiResponse> runTimeExceptionHandler(RuntimeException e) {
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(ErrorCode.UNCATEGORIZED_ERROR.getCode());
-        apiResponse.setMessage(ErrorCode.UNCATEGORIZED_ERROR.getMessage());
+        apiResponse.setMessage(ErrorCode.UNCATEGORIZED_ERROR.getMessage() + ": " + e.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
@@ -46,6 +47,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    ResponseEntity<ApiResponse> handleMissingRequestBody(HttpMessageNotReadableException e) {
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(ErrorCode.UNREADABLE_MESSAGE.getCode());
+        apiResponse.setMessage(ErrorCode.UNREADABLE_MESSAGE.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {

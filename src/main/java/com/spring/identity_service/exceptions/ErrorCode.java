@@ -17,6 +17,7 @@ public enum ErrorCode {
     UNAUTHORIZED_ERROR(1006, "Unauthorized error"),
     INVALID_JWT_TOKEN(1007, "Invalid JWT token"),
     JWT_VERIFICATION_FAILED(1008, "JWT verification failed"),
+    UNREADABLE_MESSAGE(1009, "Http message is not readable"),
     ;
 
     int code;

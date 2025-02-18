@@ -53,7 +53,7 @@ public class UserService {
 
     public String deleteUser(String id) {
         User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        userRepository.deleteById(id);
+        userRepository.delete(user);
         return "deleted";
     }
 }

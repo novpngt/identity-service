@@ -21,7 +21,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping()
-    ApiResponse createUser(@RequestBody @Valid UserCreateRequest request) {
+    ApiResponse<UserResponse, Void> createUser(@RequestBody @Valid UserCreateRequest request) {
         UserResponse userResponse = userService.createUser(request);
         return ApiResponse.<UserResponse, Void>builder()
                 .data(userResponse)
@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping
-    ApiResponse getAllUsers() {
+    ApiResponse<List<UserResponse>, Void> getAllUsers() {
         List<UserResponse> users = userService.getAllUsers();
         return ApiResponse.<List<UserResponse>, Void>builder()
                 .data(users)
@@ -45,15 +45,15 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    ApiResponse updateUserById(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request) {
-        UserResponse userResponse = userService.getUserById(userId);
+    ApiResponse<UserResponse, Void> updateUserById(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request) {
+        UserResponse userResponse = userService.updateUser(userId, request);
         return ApiResponse.<UserResponse, Void>builder()
                 .data(userResponse)
                 .build();
     }
 
     @DeleteMapping("/{userId}")
-    ApiResponse deleteUserById(@PathVariable("userId") String userId) {
+    ApiResponse<String, Void> deleteUserById(@PathVariable("userId") String userId) {
         ApiResponse<String, Void> apiResponse = new ApiResponse<>();
         apiResponse.setData(userService.deleteUser(userId));
         return apiResponse;
