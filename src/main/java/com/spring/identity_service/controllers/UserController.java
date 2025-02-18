@@ -5,6 +5,7 @@ import com.spring.identity_service.DTOs.requests.UserUpdateRequest;
 import com.spring.identity_service.DTOs.responses.ApiResponse;
 import com.spring.identity_service.DTOs.responses.UserResponse;
 import com.spring.identity_service.services.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {

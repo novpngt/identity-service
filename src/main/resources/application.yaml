@@ -1,7 +1,7 @@
 server:
   port:
   servlet:
-    context-path: /identity
+    context-path: /identity/api/v1
 
 spring:
   datasource:

@@ -1,7 +1,5 @@
 package com.spring.identity_service.configurations;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +21,13 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
-    private final String[] POST_PUBLIC_ENDPOINTS = {"/users",
+    private final String[] GET_PUBLIC_ENDPOINTS = {
+            "/swagger-ui/**",
+            "/v3/api-docs/**"
+    };
+
+    private final String[] POST_PUBLIC_ENDPOINTS = {
+            "/users",
             "/auth/token",
             "/auth/introspect",
     };
@@ -37,6 +41,7 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(
                         request -> request
+                                .requestMatchers(HttpMethod.GET, GET_PUBLIC_ENDPOINTS).permitAll()
                                 .requestMatchers(HttpMethod.POST, POST_PUBLIC_ENDPOINTS).permitAll()
                                 .anyRequest().authenticated()
                 );

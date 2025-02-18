@@ -75,7 +75,7 @@ public class AuthenticationService {
                 .subject(username)
                 .issuer("identity-service.com")
                 .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
+                .expirationTime(new Date(Instant.now().plus(5, ChronoUnit.MINUTES).toEpochMilli()))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
