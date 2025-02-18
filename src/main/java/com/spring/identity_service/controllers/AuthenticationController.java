@@ -1,8 +1,9 @@
 package com.spring.identity_service.controllers;
 
+import com.nimbusds.jose.JOSEException;
 import com.spring.identity_service.DTOs.requests.AuthenticationRequest;
+import com.spring.identity_service.DTOs.requests.IntrospectRequest;
 import com.spring.identity_service.DTOs.responses.ApiResponse;
-import com.spring.identity_service.DTOs.responses.AuthenticationResponse;
 import com.spring.identity_service.services.AuthenticationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/auth")
@@ -21,13 +24,17 @@ public class AuthenticationController {
 
     @PostMapping("/log-in")
     ApiResponse authenticate(@RequestBody final AuthenticationRequest request) {
-
-        boolean result = authenticationService.authenticate(request);
-
+        var result = authenticationService.authenticate(request);
         return ApiResponse.builder().
-                data(AuthenticationResponse.builder()
-                        .authenticated(result)
-                        .build())
+                data(result)
+                .build();
+    }
+
+    @PostMapping("/introspect")
+    ApiResponse introspect(@RequestBody final IntrospectRequest request) throws ParseException, JOSEException {
+        var result = authenticationService.introspect(request);
+        return ApiResponse.builder()
+                .data(result)
                 .build();
     }
 }

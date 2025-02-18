@@ -14,6 +14,9 @@ public enum ErrorCode {
     USER_VALIDATION_ERROR(1003, "User validation error"),
     USER_NOT_FOUND(1004, "User not found"),
     USER_NOT_EXISTS(1005, "User not exists"),
+    UNAUTHORIZED_ERROR(1006, "Unauthorized error"),
+    INVALID_JWT_TOKEN(1007, "Invalid JWT token"),
+    JWT_VERIFICATION_FAILED(1008, "JWT verification failed"),
     ;
 
     int code;
