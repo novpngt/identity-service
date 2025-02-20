@@ -4,7 +4,6 @@ import com.spring.identity_service.DTOs.requests.UserCreateRequest;
 import com.spring.identity_service.DTOs.requests.UserUpdateRequest;
 import com.spring.identity_service.DTOs.responses.UserResponse;
 import com.spring.identity_service.entities.User;
-import com.spring.identity_service.enums.Role;
 import com.spring.identity_service.exceptions.AppException;
 import com.spring.identity_service.enums.ErrorCode;
 import com.spring.identity_service.mappers.UserMapper;
@@ -20,13 +19,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-@Slf4j
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
@@ -40,9 +37,6 @@ public class UserService {
 
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
-        user.setRoles(roles);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

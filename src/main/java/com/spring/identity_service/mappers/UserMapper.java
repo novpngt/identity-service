@@ -7,12 +7,10 @@ import com.spring.identity_service.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-import java.util.List;
-
 @Mapper(componentModel = "Spring")
 public interface UserMapper {
     User toUser(UserCreateRequest request);
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
+
     UserResponse toUserResponse(User user);
-    List<UserResponse> toUserResponses(List<User> users);
 }

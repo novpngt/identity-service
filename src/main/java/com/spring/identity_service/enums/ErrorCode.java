@@ -21,6 +21,8 @@ public enum ErrorCode {
     JWT_VERIFICATION_FAILED(1008, "JWT verification failed", HttpStatus.UNAUTHORIZED),
     UNREADABLE_MESSAGE(1009, "Http message is not readable", HttpStatus.BAD_REQUEST),
     UNAUTHORIZED_ERROR(1010, "You do not have this permission", HttpStatus.FORBIDDEN),
+    PERMISSION_ALREADY_EXISTS(1011, "Permission already exists", HttpStatus.CONFLICT),
+    ROLE_ALREADY_EXISTS(1012, "Role already exists", HttpStatus.CONFLICT),
 
     ;
 
