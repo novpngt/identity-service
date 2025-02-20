@@ -49,7 +49,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request -> request
                                 .requestMatchers(HttpMethod.GET, GET_PUBLIC_ENDPOINTS).permitAll()
-//                                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, POST_PUBLIC_ENDPOINTS).permitAll()
                                 .anyRequest().authenticated()
                 );
@@ -59,6 +58,7 @@ public class SecurityConfig {
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(jwtDecoder())
                                 .jwtAuthenticationConverter(customPrefixJwtAuthenticationConverter()))
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 );
 
         httpSecurity

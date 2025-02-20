@@ -48,7 +48,7 @@ public class AuthenticationService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!authenticated) {
-            throw new AppException(ErrorCode.UNAUTHORIZED_ERROR);
+            throw new AppException(ErrorCode.UNAUTHENTICATED_ERROR);
         }
 
         var token = generateToken(user);
@@ -90,7 +90,6 @@ public class AuthenticationService {
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
             return jwsObject.serialize();
         } catch (JOSEException e) {
-            log.error("Error while signing JWT", e);
             throw new RuntimeException(e);
         }
     }

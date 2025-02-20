@@ -1,7 +1,12 @@
 package com.spring.identity_service.exceptions;
 
 import com.spring.identity_service.enums.ErrorCode;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppException extends RuntimeException{
 
     public AppException(ErrorCode errorCode) {
@@ -9,13 +14,5 @@ public class AppException extends RuntimeException{
         this.errorCode = errorCode;
     }
 
-    private ErrorCode errorCode;
-
-    public ErrorCode getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(ErrorCode errorCode) {
-        this.errorCode = errorCode;
-    }
+    ErrorCode errorCode;
 }

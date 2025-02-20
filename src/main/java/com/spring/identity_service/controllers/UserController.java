@@ -28,10 +28,6 @@ public class UserController {
 
     @GetMapping
     ApiResponse<List<UserResponse>, Void> getUsers() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("username: {}", authentication.getName());
-        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
-
         List<UserResponse> users = userService.getUsers();
         return ApiResponse.<List<UserResponse>, Void>builder()
                 .data(users)
@@ -39,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    ApiResponse<UserResponse, Void> getUserById(@PathVariable("userId") String userId) {
+    ApiResponse<UserResponse, ?> getUserById(@PathVariable("userId") String userId) {
         UserResponse userResponse = userService.getUserById(userId);
         return ApiResponse.<UserResponse, Void>builder()
                 .data(userResponse)
