@@ -78,7 +78,7 @@ public class AuthenticationService {
                 .subject(user.getUsername())
                 .issuer("identity-service.com")
                 .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(5, ChronoUnit.MINUTES).toEpochMilli()))
+                .expirationTime(new Date(Instant.now().plus(15, ChronoUnit.MINUTES).toEpochMilli()))
                 .claim("scope", buildScope(user))
                 .build();
 

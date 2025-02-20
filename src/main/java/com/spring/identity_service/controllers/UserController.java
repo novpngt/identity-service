@@ -26,14 +26,6 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
 
-    @PostMapping()
-    ApiResponse<UserResponse, Void> createUser(@RequestBody @Valid UserCreateRequest request) {
-        UserResponse userResponse = userService.createUser(request);
-        return ApiResponse.<UserResponse, Void>builder()
-                .data(userResponse)
-                .build();
-    }
-
     @GetMapping
     ApiResponse<List<UserResponse>, Void> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -49,6 +41,22 @@ public class UserController {
     @GetMapping("/{userId}")
     ApiResponse<UserResponse, Void> getUserById(@PathVariable("userId") String userId) {
         UserResponse userResponse = userService.getUserById(userId);
+        return ApiResponse.<UserResponse, Void>builder()
+                .data(userResponse)
+                .build();
+    }
+
+    @GetMapping("/myInfo")
+    ApiResponse getMyInfo(){
+        UserResponse userResponse = userService.getMyInfo();
+        return ApiResponse.<UserResponse, Void>builder()
+                .data(userResponse)
+                .build();
+    }
+
+    @PostMapping()
+    ApiResponse<UserResponse, Void> createUser(@RequestBody @Valid UserCreateRequest request) {
+        UserResponse userResponse = userService.createUser(request);
         return ApiResponse.<UserResponse, Void>builder()
                 .data(userResponse)
                 .build();
