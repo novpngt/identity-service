@@ -1,1 +1,1 @@
-Identity service
+Identity-service
