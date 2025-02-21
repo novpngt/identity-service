@@ -3,9 +3,11 @@ package com.spring.identity_service.controllers;
 import com.nimbusds.jose.JOSEException;
 import com.spring.identity_service.DTOs.requests.AuthenticationRequest;
 import com.spring.identity_service.DTOs.requests.IntrospectRequest;
+import com.spring.identity_service.DTOs.requests.LogoutRequest;
 import com.spring.identity_service.DTOs.responses.ApiResponse;
 import com.spring.identity_service.DTOs.responses.AuthenticationResponse;
 import com.spring.identity_service.DTOs.responses.IntrospectResponse;
+import com.spring.identity_service.DTOs.responses.LogoutResponse;
 import com.spring.identity_service.services.AuthenticationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,14 @@ public class AuthenticationController {
     ApiResponse<IntrospectResponse, Void> introspect(@RequestBody final IntrospectRequest request) throws ParseException, JOSEException {
         IntrospectResponse result = authenticationService.introspect(request);
         return ApiResponse.<IntrospectResponse, Void>builder()
+                .data(result)
+                .build();
+    }
+
+    @PostMapping("/logout")
+    ApiResponse logout(@RequestBody final LogoutRequest request) throws ParseException, JOSEException {
+        LogoutResponse result = authenticationService.logout(request);
+        return ApiResponse.builder()
                 .data(result)
                 .build();
     }
