@@ -56,7 +56,8 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(jwtDecoder())
-                                .jwtAuthenticationConverter(customPrefixJwtAuthenticationConverter()))
+//                                .jwtAuthenticationConverter(customPrefixJwtAuthenticationConverter())
+                        )
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 );
 
@@ -78,7 +79,7 @@ public class SecurityConfig {
     @Bean
     JwtAuthenticationConverter customPrefixJwtAuthenticationConverter(){
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);

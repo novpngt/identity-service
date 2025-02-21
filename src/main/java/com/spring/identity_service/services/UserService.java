@@ -7,6 +7,7 @@ import com.spring.identity_service.entities.User;
 import com.spring.identity_service.exceptions.AppException;
 import com.spring.identity_service.enums.ErrorCode;
 import com.spring.identity_service.mappers.UserMapper;
+import com.spring.identity_service.repositories.RoleRepository;
 import com.spring.identity_service.repositories.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     public UserResponse createUser(UserCreateRequest request) {
 
@@ -43,7 +46,8 @@ public class UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getUsers() {
-        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
+        return userRepository.findAll().stream().
+                map(userMapper::toUserResponse).toList();
     }
 
     @PostAuthorize("returnObject.username == authentication.name")
@@ -62,7 +66,11 @@ public class UserService {
 
     public UserResponse updateUser (String id, UserUpdateRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        var roles = roleRepository.findAllById(request.getRoles());
+
         userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRoles(new HashSet<>(roles));
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
