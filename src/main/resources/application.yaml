@@ -15,3 +15,5 @@ spring:
 
 jwt:
   signer-key: "c8cvw7MIEv2x8O6rQ2C2cpVBiC0eN9iGUkLz/5BYx5gKrhmWEBTgYx6Gy0V1DaxD"
+  token-ttl: 20
+  token-grace-period: 40
