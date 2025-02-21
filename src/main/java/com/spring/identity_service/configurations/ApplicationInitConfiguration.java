@@ -32,6 +32,11 @@ public class ApplicationInitConfiguration {
                         Role newRole = Role.builder().name("ADMIN").description("ADMIN ROLE").build();
                         return roleRepository.save(newRole);
                     });
+            Role userRole = roleRepository.findById("USER")
+                    .orElseGet(() -> {
+                        Role newRole = Role.builder().name("USER").description("USER ROLE").build();
+                        return roleRepository.save(newRole);
+                    });
             if (userRepository.findByUsername("admin").isEmpty()) {
                 User admin = User.builder()
                         .username("admin")
