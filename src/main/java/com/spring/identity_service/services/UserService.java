@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -39,6 +40,8 @@ public class UserService {
         }
 
         User user = userMapper.toUser(request);
+        var role = roleRepository.findById("USER").orElseThrow(()-> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        user.setRoles(Set.of(role));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         return userMapper.toUserResponse(userRepository.save(user));

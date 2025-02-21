@@ -3,19 +3,26 @@ package com.spring.identity_service.exceptions;
 import com.nimbusds.jose.JOSEException;
 import com.spring.identity_service.DTOs.responses.ApiResponse;
 import com.spring.identity_service.enums.ErrorCode;
+import jakarta.validation.ConstraintViolation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
+    private static final String MIN_ATTRIBUTE = "min";
+    private static final String MAX_ATTRIBUTE = "max";
+
     @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<ApiResponse> runTimeExceptionHandler(RuntimeException e) {
         ApiResponse apiResponse = new ApiResponse();
@@ -70,18 +77,43 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<ApiResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
-        //Listing validation errors
-        List<ValidationError> userValidationErrors = e.getBindingResult().getFieldErrors().stream()
-                .map(fieldError -> new ValidationError(fieldError.getField(), fieldError.getDefaultMessage()))
-                .collect(Collectors.toList());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity<ApiResponse> handleValidationException(MethodArgumentNotValidException ex) {
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
 
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setCode(ErrorCode.USER_VALIDATION_ERROR.getCode());
-        apiResponse.setMessage(ErrorCode.USER_VALIDATION_ERROR.getMessage());
-        apiResponse.setErrors(userValidationErrors);
+        List<ValidationError> validationErrors = fieldErrors.stream()
+                .map(fieldError -> convertToValidationError(fieldError))
+                .toList();
 
-        return ResponseEntity.badRequest().body(apiResponse);
+        ApiResponse response = new ApiResponse();
+        response.setCode(ErrorCode.USER_VALIDATION_ERROR.getCode());
+        response.setMessage(ErrorCode.USER_VALIDATION_ERROR.getMessage());
+        response.setErrors(validationErrors);
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    private ValidationError convertToValidationError(FieldError fieldError) {
+        String enumKey = fieldError.getDefaultMessage();
+        ErrorCode errorCode = ErrorCode.UNCATEGORIZED_ERROR;
+        Map<String, Object> attributes = null;
+
+        try {
+            errorCode = ErrorCode.valueOf(enumKey);
+            var constraintViolation = fieldError.unwrap(ConstraintViolation.class);
+            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
+            log.info("Validation attributes: {}", attributes);
+        } catch (IllegalArgumentException ignored) {
+        }
+
+        String message = mapAttribute(errorCode.getMessage(), attributes);
+
+        return new ValidationError(fieldError.getField(), message);
+    }
+
+    private String mapAttribute(String message, Map<String, Object> attributes){
+        String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
+        String maxValue = String.valueOf(attributes.get(MAX_ATTRIBUTE));
+        return message.replace("{min}", minValue).replace("{max}", maxValue);
     }
 }

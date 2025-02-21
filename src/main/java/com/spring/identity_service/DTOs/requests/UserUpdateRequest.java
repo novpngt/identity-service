@@ -1,5 +1,6 @@
 package com.spring.identity_service.DTOs.requests;
 
+import com.spring.identity_service.validators.DOBConstraint;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -15,15 +16,16 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateRequest {
     @Size(min = 6, max = 20,
-            message = "Username must be between {min} and {max} characters long.")
+            message = "INVALID_USERNAME")
     String username;
     @Size(min=6, max=32,
-            message = "Password must be between {min} and {max} characters long.")
+            message = "INVALID_PASSWORD")
     String password;
-    @NotEmpty(message = "Please provide your first name. It cannot be left blank.")
+    @NotEmpty(message = "INVALID_FIRSTNAME")
     String firstName;
-    @NotEmpty(message = "Please provide your last name. It cannot be left blank.")
+    @NotEmpty(message = "INVALID_LASTNAME")
     String lastName;
+    @DOBConstraint(min = 18, message = "INVALID_AGE")
     LocalDate birthDate;
     Set<String> roles;
 }
