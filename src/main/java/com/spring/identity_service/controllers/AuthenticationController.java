@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.spring.identity_service.DTOs.requests.AuthenticationRequest;
 import com.spring.identity_service.DTOs.requests.IntrospectRequest;
 import com.spring.identity_service.DTOs.requests.LogoutRequest;
+import com.spring.identity_service.DTOs.requests.RefreshTokenRequest;
 import com.spring.identity_service.DTOs.responses.ApiResponse;
 import com.spring.identity_service.DTOs.responses.AuthenticationResponse;
 import com.spring.identity_service.DTOs.responses.IntrospectResponse;
@@ -47,6 +48,13 @@ public class AuthenticationController {
         LogoutResponse result = authenticationService.logout(request);
         return ApiResponse.builder()
                 .data(result)
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse, Void> refresh(@RequestBody final RefreshTokenRequest request) throws ParseException, JOSEException {
+        return ApiResponse.<AuthenticationResponse, Void>builder()
+                .data(authenticationService.refreshToken(request))
                 .build();
     }
 }

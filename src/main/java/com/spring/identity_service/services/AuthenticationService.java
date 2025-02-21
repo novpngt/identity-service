@@ -8,6 +8,7 @@ import com.nimbusds.jwt.SignedJWT;
 import com.spring.identity_service.DTOs.requests.AuthenticationRequest;
 import com.spring.identity_service.DTOs.requests.IntrospectRequest;
 import com.spring.identity_service.DTOs.requests.LogoutRequest;
+import com.spring.identity_service.DTOs.requests.RefreshTokenRequest;
 import com.spring.identity_service.DTOs.responses.AuthenticationResponse;
 import com.spring.identity_service.DTOs.responses.IntrospectResponse;
 import com.spring.identity_service.DTOs.responses.LogoutResponse;
@@ -73,6 +74,29 @@ public class AuthenticationService {
         invalidatedTokenRepository.save(invalidatedToken);
         return LogoutResponse.builder()
                 .success(true)
+                .build();
+    }
+
+    public AuthenticationResponse refreshToken(RefreshTokenRequest request) throws ParseException, JOSEException {
+        var signToken = verifyToken(request.getToken());
+        String jit = signToken.getJWTClaimsSet().getJWTID();
+        Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+
+        User user = userRepository.findByUsername(signToken.getJWTClaimsSet().getSubject())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        String token = generateToken(user);
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jit)
+                .expiration(expiryTime)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .authenticated(true)
                 .build();
     }
 

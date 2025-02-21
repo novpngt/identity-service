@@ -38,23 +38,18 @@ public class CustomJwtDecoder implements JwtDecoder {
     @Override
     public Jwt decode(String token) throws JwtException {
         try {
-            IntrospectResponse isValid = authenticationService.introspect(IntrospectRequest.builder()
+            authenticationService.introspect(IntrospectRequest.builder()
                     .token(token)
                     .build());
-            log.info(isValid.toString());
         } catch (ParseException | JOSEException e) {
             throw new JwtException(e.getMessage());
         }
         if(Objects.isNull(nimbusJwtDecoder)){
-            log.info("SIGNER_KEY: {}", SIGNER_KEY);
             SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
             nimbusJwtDecoder = NimbusJwtDecoder
                 .withSecretKey(secretKeySpec)
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
-
-            log.info("token: {}", nimbusJwtDecoder.decode(token).getClaims());
-
         }
         return nimbusJwtDecoder.decode(token);
     }

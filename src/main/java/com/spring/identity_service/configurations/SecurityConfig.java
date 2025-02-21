@@ -43,6 +43,7 @@ public class SecurityConfig {
             "/auth/token",
             "/auth/introspect",
             "/auth/logout",
+            "/auth/refresh",
     };
     CustomJwtDecoder customJwtDecoder;
 
@@ -64,6 +65,7 @@ public class SecurityConfig {
                                 .jwtAuthenticationConverter(customPrefixJwtAuthenticationConverter())
                         )
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+//                        .accessDeniedHandler(new JwtAccessDeniedHandler())
                 );
 
         httpSecurity
