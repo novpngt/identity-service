@@ -27,7 +27,6 @@ import java.util.Objects;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class CustomJwtDecoder implements JwtDecoder {
-    private static final Logger log = LoggerFactory.getLogger(CustomJwtDecoder.class);
     @NonFinal
     @Value("${jwt.signer-key}")
     String SIGNER_KEY;
@@ -37,20 +36,21 @@ public class CustomJwtDecoder implements JwtDecoder {
 
     @Override
     public Jwt decode(String token) throws JwtException {
-        try {
-            authenticationService.introspect(IntrospectRequest.builder()
-                    .token(token)
-                    .build());
-        } catch (ParseException | JOSEException e) {
-            throw new JwtException(e.getMessage());
-        }
-        if(Objects.isNull(nimbusJwtDecoder)){
-            SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
-            nimbusJwtDecoder = NimbusJwtDecoder
-                .withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
-        }
-        return nimbusJwtDecoder.decode(token);
+        return authenticationService.verifyToken(token, false);
+//        try {
+//            authenticationService.introspect(IntrospectRequest.builder()
+//                    .token(token)
+//                    .build());
+//        } catch (ParseException | JOSEException e) {
+//            throw new JwtException(e.getMessage());
+//        }
+//        if(Objects.isNull(nimbusJwtDecoder)){
+//            SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
+//            nimbusJwtDecoder = NimbusJwtDecoder
+//                .withSecretKey(secretKeySpec)
+//                .macAlgorithm(MacAlgorithm.HS512)
+//                .build();
+//        }
+//        return nimbusJwtDecoder.decode(token);
     }
 }

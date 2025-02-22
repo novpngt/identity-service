@@ -2,9 +2,7 @@ package com.spring.identity_service.services;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 import com.spring.identity_service.DTOs.requests.AuthenticationRequest;
 import com.spring.identity_service.DTOs.requests.IntrospectRequest;
 import com.spring.identity_service.DTOs.requests.LogoutRequest;
@@ -25,11 +23,17 @@ import lombok.experimental.NonFinal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtException;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -72,10 +76,71 @@ public class AuthenticationService {
                 .build();
     }
 
+    public LogoutResponse logout(LogoutRequest request) throws JwtException {
+        Jwt jwt = verifyToken(request.getToken(), true); // Trả về Jwt
+        String jit = jwt.getId(); // Lấy jti
+        Date expiryTime = Date.from(jwt.getExpiresAt()); // Chuyển Instant sang Date
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jit)
+                .expiration(expiryTime)
+                .build();
+        invalidatedTokenRepository.save(invalidatedToken);
+        return LogoutResponse.builder()
+                .success(true)
+                .build();
+    }
+
+    public AuthenticationResponse refreshToken(RefreshTokenRequest request) throws JwtException {
+        Jwt jwt = verifyToken(request.getToken(), true); // Trả về Jwt
+        String jit = jwt.getId(); // Lấy jti
+        Date expiryTime = Date.from(jwt.getExpiresAt()); // Chuyển Instant sang Date
+        User user = userRepository.findByUsername(jwt.getSubject()) // Lấy sub
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        String token = generateToken(user);
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jit)
+                .expiration(expiryTime)
+                .build();
+        invalidatedTokenRepository.save(invalidatedToken);
+        return AuthenticationResponse.builder()
+                .token(token)
+                .authenticated(true)
+                .build();
+    }
+
+    public Jwt verifyToken(String token, boolean isRefresh) throws JwtException {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
+        NimbusJwtDecoder decoder = NimbusJwtDecoder.withSecretKey(secretKeySpec)
+                .macAlgorithm(MacAlgorithm.HS512)
+                .build();
+
+        Jwt jwt;
+        try {
+            jwt = decoder.decode(token);
+        } catch (JwtException e) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED_ERROR);
+        }
+
+        Instant expiration = isRefresh
+                ? jwt.getIssuedAt().plus(TOKEN_GRACE_PERIOD, ChronoUnit.SECONDS)
+                : jwt.getExpiresAt();
+        if (expiration.isBefore(Instant.now())) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED_ERROR);
+        }
+
+        String jwtId = jwt.getId();
+        if (jwtId != null && invalidatedTokenRepository.existsById(jwtId)) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED_ERROR);
+        }
+
+        return jwt;
+    }
+
+    /*
     public LogoutResponse logout(LogoutRequest request) throws ParseException, JOSEException {
-            var signToken = verifyToken(request.getToken(), true);
-            String jit = signToken.getJWTClaimsSet().getJWTID();
-            Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+            var signedToken = verifyToken(request.getToken(), true);
+            String jit = signedToken.getJWTClaimsSet().getJWTID();
+            Date expiryTime = signedToken.getJWTClaimsSet().getExpirationTime();
             InvalidatedToken invalidatedToken = InvalidatedToken.builder()
                     .id(jit)
                     .expiration(expiryTime)
@@ -129,6 +194,7 @@ public class AuthenticationService {
         }
         return signedJWT;
     }
+     */
 
     public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
         var token = request.getToken();
