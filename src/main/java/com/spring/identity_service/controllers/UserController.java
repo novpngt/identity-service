@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,8 +23,8 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserController {
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
 
     @GetMapping
@@ -52,7 +53,9 @@ public class UserController {
 
     @PostMapping()
     ApiResponse<UserResponse, Void> createUser(@RequestBody @Valid UserCreateRequest request) {
+        log.info("Controller: createUser");
         UserResponse userResponse = userService.createUser(request);
+        System.out.println("UserResponse: " + userResponse);
         return ApiResponse.<UserResponse, Void>builder()
                 .data(userResponse)
                 .build();

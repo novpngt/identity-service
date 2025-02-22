@@ -12,6 +12,7 @@ import com.spring.identity_service.repositories.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
@@ -26,6 +27,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
+@Slf4j
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
@@ -33,13 +35,14 @@ public class UserService {
     RoleRepository roleRepository;
 
     public UserResponse createUser(UserCreateRequest request) {
-
+        log.info("Service: createUser");
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
         User user = userMapper.toUser(request);
-        var role = roleRepository.findById("USER").orElseThrow(()-> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        var role = roleRepository.findById("USER")
+                .orElseThrow(()-> new AppException(ErrorCode.ROLE_NOT_FOUND));
         user.setRoles(Set.of(role));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -67,7 +70,8 @@ public class UserService {
     }
 
     public UserResponse updateUser (String id, UserUpdateRequest request) {
-        User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         var roles = roleRepository.findAllById(request.getRoles());
 
         userMapper.updateUser(user, request);
@@ -77,7 +81,8 @@ public class UserService {
     }
 
     public String deleteUser(String id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         userRepository.delete(user);
         return "deleted";
     }

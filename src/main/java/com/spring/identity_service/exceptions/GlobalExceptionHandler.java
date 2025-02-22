@@ -86,8 +86,9 @@ public class GlobalExceptionHandler {
                 .toList();
 
         ApiResponse response = new ApiResponse();
-        response.setCode(ErrorCode.USER_VALIDATION_ERROR.getCode());
-        response.setMessage(ErrorCode.USER_VALIDATION_ERROR.getMessage());
+        ErrorCode errorCode = ErrorCode.USER_VALIDATION_ERROR;
+        response.setCode(errorCode.getCode());
+        response.setMessage(errorCode.getMessage());
         response.setErrors(validationErrors);
 
         return ResponseEntity.badRequest().body(response);
