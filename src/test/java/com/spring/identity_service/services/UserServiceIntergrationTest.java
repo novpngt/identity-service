@@ -17,12 +17,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -30,14 +35,22 @@ import static org.mockito.ArgumentMatchers.anyString;
 @SpringBootTest
 @Slf4j
 @AutoConfigureMockMvc
-@TestPropertySource("/test.properties")
-public class UserServiceTest {
+@Testcontainers
+public class UserServiceIntergrationTest {
+    @Container
+    static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:latest");
+    @DynamicPropertySource
+    static void configDataSource(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", mysqlContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", mysqlContainer::getUsername);
+        registry.add("spring.datasource.password", mysqlContainer::getPassword);
+        registry.add("spring.datasource.driver-class-name", mysqlContainer::getDriverClassName);
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
+    }
     @Autowired
     private UserService userService;
-    @MockitoBean
+    @Autowired
     private UserRepository userRepository;
-    @MockitoBean
-    private RoleRepository roleRepository;
 
     private UserCreateRequest userRequest;
     private UserResponse userResponse;
@@ -74,11 +87,12 @@ public class UserServiceTest {
     }
 
     @Test
+    @Transactional
     void createUser_validRequest_success() {
-        //GIVEN
-        Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(false);
-        Mockito.when(userRepository.save(any())).thenReturn(user);
-        Mockito.when(roleRepository.findById(anyString())).thenReturn(Optional.ofNullable(role));
+//        //GIVEN
+//        Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(false);
+//        Mockito.when(userRepository.save(any())).thenReturn(user);
+//        Mockito.when(roleRepository.findById(anyString())).thenReturn(Optional.ofNullable(role));
         //WHEN
         var response = userService.createUser(userRequest);
         //THEN
@@ -86,9 +100,17 @@ public class UserServiceTest {
     }
 
     @Test
+    @Transactional
     void createUser_userExisted_fail() {
         //GIVEN
-        Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(true);
+        User existingUser = User.builder()
+                .username(userRequest.getUsername())
+                .password("hashed-password")
+                .lastName("userLN")
+                .firstName("userFN")
+                .birthDate(LocalDate.of(2000, 2, 2))
+                .build();
+        userRepository.save(existingUser);
         //WHEN
         var exception = Assertions.assertThrows(AppException.class, ()->userService.createUser(userRequest));
         //THEN
@@ -99,14 +121,14 @@ public class UserServiceTest {
     @Test
     @WithMockUser(username = "user")
     void getInfo_validRequest_success() {
-        Mockito.when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+//        Mockito.when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
         Assertions.assertEquals(userResponse.getUsername(), user.getUsername());
     }
 
     @Test
     @WithMockUser(username = "user")
     void getInfo_userNotFound_fail() {
-        Mockito.when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
+//        Mockito.when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
         var exception = Assertions.assertThrows(AppException.class, ()-> userService.getMyInfo());
         Assertions.assertEquals(exception.getErrorCode().getCode(), ErrorCode.USER_NOT_FOUND.getCode());
         Assertions.assertEquals(exception.getErrorCode().getMessage(), ErrorCode.USER_NOT_FOUND.getMessage());

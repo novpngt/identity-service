@@ -27,12 +27,13 @@ public class ApplicationInitConfiguration {
     PasswordEncoder passwordEncoder;
     @Bean
     @ConditionalOnProperty(
-            prefix = "spring",
-            value = "data.source.driver-class-name",
-            havingValue = "com.mysql.jdbc.Driver"
+            prefix = "spring.datasource",
+            value = "driver-class-name",
+            havingValue = "com.mysql.cj.jdbc.Driver"
     )
     ApplicationRunner init() {
         return args -> {
+            log.info("Running ApplicationRunner for role initialization...");
             Role adminRole = roleRepository.findById("ADMIN")
                     .orElseGet(() -> {
                         Role newRole = Role.builder().name("ADMIN").description("ADMIN ROLE").build();
