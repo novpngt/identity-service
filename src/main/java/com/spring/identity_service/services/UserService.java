@@ -3,6 +3,7 @@ package com.spring.identity_service.services;
 import com.spring.identity_service.DTOs.requests.UserCreateRequest;
 import com.spring.identity_service.DTOs.requests.UserUpdateRequest;
 import com.spring.identity_service.DTOs.responses.UserResponse;
+import com.spring.identity_service.entities.Role;
 import com.spring.identity_service.entities.User;
 import com.spring.identity_service.exceptions.AppException;
 import com.spring.identity_service.enums.ErrorCode;
@@ -41,7 +42,7 @@ public class UserService {
         }
 
         User user = userMapper.toUser(request);
-        var role = roleRepository.findById("USER")
+        Role role = roleRepository.findById("USER")
                 .orElseThrow(()-> new AppException(ErrorCode.ROLE_NOT_FOUND));
         user.setRoles(Set.of(role));
         user.setPassword(passwordEncoder.encode(request.getPassword()));

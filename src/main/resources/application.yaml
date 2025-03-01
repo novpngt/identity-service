@@ -5,15 +5,16 @@ server:
 
 spring:
   datasource:
-    url: "jdbc:mysql://localhost:3306/identity_service"
+    url: jdbc:mysql://localhost:3306/identity_service
     username: root
     password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
 jwt:
-  signer-key: "c8cvw7MIEv2x8O6rQ2C2cpVBiC0eN9iGUkLz/5BYx5gKrhmWEBTgYx6Gy0V1DaxD"
+  signer-key: c8cvw7MIEv2x8O6rQ2C2cpVBiC0eN9iGUkLz/5BYx5gKrhmWEBTgYx6Gy0V1DaxD
   token-ttl: 20
   token-grace-period: 40

@@ -94,6 +94,19 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.18.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.3.232</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>6.4.3</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -140,6 +153,33 @@
                         <arg>-Amapstruct.defaultComponentModel=spring</arg>
                         <arg>-Amapstruct.verbose=true</arg>
                     </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>com/spring/identity_service/DTOs/**</exclude>
+                        <exclude>com/spring/identity_service/entities/**</exclude>
+                        <exclude>com/spring/identity_service/mappers/**</exclude>
+                        <exclude>com/spring/identity_service/configurations/**</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
