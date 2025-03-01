@@ -106,7 +106,7 @@ public class UserServiceTest {
     @Test
     @WithMockUser(username = "user")
     void getInfo_userNotFound_fail() {
-        Mockito.when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
+        Mockito.when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
         var exception = Assertions.assertThrows(AppException.class, ()-> userService.getMyInfo());
         Assertions.assertEquals(exception.getErrorCode().getCode(), ErrorCode.USER_NOT_FOUND.getCode());
         Assertions.assertEquals(exception.getErrorCode().getMessage(), ErrorCode.USER_NOT_FOUND.getMessage());

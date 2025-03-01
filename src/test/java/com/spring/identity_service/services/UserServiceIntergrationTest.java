@@ -6,31 +6,23 @@ import com.spring.identity_service.entities.Role;
 import com.spring.identity_service.entities.User;
 import com.spring.identity_service.enums.ErrorCode;
 import com.spring.identity_service.exceptions.AppException;
-import com.spring.identity_service.repositories.RoleRepository;
 import com.spring.identity_service.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 
 @SpringBootTest
 @Slf4j
@@ -89,10 +81,7 @@ public class UserServiceIntergrationTest {
     @Test
     @Transactional
     void createUser_validRequest_success() {
-//        //GIVEN
-//        Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(false);
-//        Mockito.when(userRepository.save(any())).thenReturn(user);
-//        Mockito.when(roleRepository.findById(anyString())).thenReturn(Optional.ofNullable(role));
+        //GIVEN
         //WHEN
         var response = userService.createUser(userRequest);
         //THEN
@@ -121,14 +110,12 @@ public class UserServiceIntergrationTest {
     @Test
     @WithMockUser(username = "user")
     void getInfo_validRequest_success() {
-//        Mockito.when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
         Assertions.assertEquals(userResponse.getUsername(), user.getUsername());
     }
 
     @Test
     @WithMockUser(username = "user")
     void getInfo_userNotFound_fail() {
-//        Mockito.when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
         var exception = Assertions.assertThrows(AppException.class, ()-> userService.getMyInfo());
         Assertions.assertEquals(exception.getErrorCode().getCode(), ErrorCode.USER_NOT_FOUND.getCode());
         Assertions.assertEquals(exception.getErrorCode().getMessage(), ErrorCode.USER_NOT_FOUND.getMessage());
