@@ -1,12 +1,7 @@
 package com.spring.identity_service.configurations;
 
-import com.spring.identity_service.entities.Role;
-import com.spring.identity_service.entities.User;
-import com.spring.identity_service.repositories.RoleRepository;
-import com.spring.identity_service.repositories.UserRepository;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
@@ -15,7 +10,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Set;
+import com.spring.identity_service.entities.Role;
+import com.spring.identity_service.entities.User;
+import com.spring.identity_service.repositories.RoleRepository;
+import com.spring.identity_service.repositories.UserRepository;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Configuration
 @RequiredArgsConstructor
@@ -25,25 +27,25 @@ public class ApplicationInitConfiguration {
     RoleRepository roleRepository;
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
+
     @Bean
     @ConditionalOnProperty(
             prefix = "spring.datasource",
             value = "driver-class-name",
-            havingValue = "com.mysql.cj.jdbc.Driver"
-    )
+            havingValue = "com.mysql.cj.jdbc.Driver")
     ApplicationRunner init() {
         return args -> {
             log.info("Running ApplicationRunner for role initialization...");
-            Role adminRole = roleRepository.findById("ADMIN")
-                    .orElseGet(() -> {
-                        Role newRole = Role.builder().name("ADMIN").description("ADMIN ROLE").build();
-                        return roleRepository.save(newRole);
-                    });
-            Role userRole = roleRepository.findById("USER")
-                    .orElseGet(() -> {
-                        Role newRole = Role.builder().name("USER").description("USER ROLE").build();
-                        return roleRepository.save(newRole);
-                    });
+            Role adminRole = roleRepository.findById("ADMIN").orElseGet(() -> {
+                Role newRole =
+                        Role.builder().name("ADMIN").description("ADMIN ROLE").build();
+                return roleRepository.save(newRole);
+            });
+            Role userRole = roleRepository.findById("USER").orElseGet(() -> {
+                Role newRole =
+                        Role.builder().name("USER").description("USER ROLE").build();
+                return roleRepository.save(newRole);
+            });
             if (userRepository.findByUsername("admin").isEmpty()) {
                 User admin = User.builder()
                         .username("admin")
@@ -51,7 +53,9 @@ public class ApplicationInitConfiguration {
                         .password(passwordEncoder.encode("admin"))
                         .build();
                 userRepository.save(admin);
-                log.warn("admin user has been created (default password: admin). {}. Please change password immediately!!!", admin);
+                log.warn(
+                        "admin user has been created (default password: admin). {}. Please change password immediately!!!",
+                        admin);
             }
         };
     }

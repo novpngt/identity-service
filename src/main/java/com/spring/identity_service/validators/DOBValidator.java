@@ -1,13 +1,14 @@
 package com.spring.identity_service.validators;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DOBValidator implements ConstraintValidator<DOBConstraint, LocalDate> {
@@ -15,7 +16,7 @@ public class DOBValidator implements ConstraintValidator<DOBConstraint, LocalDat
 
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext constraintValidatorContext) {
-        if (Objects.isNull(value)){
+        if (Objects.isNull(value)) {
             return true;
         }
         long years = ChronoUnit.YEARS.between(value, LocalDate.now());

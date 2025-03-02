@@ -1,22 +1,22 @@
 package com.spring.identity_service.controllers;
 
+import java.util.List;
+
+import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.spring.identity_service.DTOs.requests.UserCreateRequest;
 import com.spring.identity_service.DTOs.requests.UserUpdateRequest;
 import com.spring.identity_service.DTOs.responses.ApiResponse;
 import com.spring.identity_service.DTOs.responses.UserResponse;
 import com.spring.identity_service.services.UserService;
+
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -30,25 +30,19 @@ public class UserController {
     @GetMapping
     ApiResponse<List<UserResponse>, Void> getUsers() {
         List<UserResponse> users = userService.getUsers();
-        return ApiResponse.<List<UserResponse>, Void>builder()
-                .data(users)
-                .build();
+        return ApiResponse.<List<UserResponse>, Void>builder().data(users).build();
     }
 
     @GetMapping("/{userId}")
     ApiResponse<UserResponse, ?> getUserById(@PathVariable("userId") String userId) {
         UserResponse userResponse = userService.getUserById(userId);
-        return ApiResponse.<UserResponse, Void>builder()
-                .data(userResponse)
-                .build();
+        return ApiResponse.<UserResponse, Void>builder().data(userResponse).build();
     }
 
     @GetMapping("/myInfo")
-    ApiResponse getMyInfo(){
+    ApiResponse getMyInfo() {
         UserResponse userResponse = userService.getMyInfo();
-        return ApiResponse.<UserResponse, Void>builder()
-                .data(userResponse)
-                .build();
+        return ApiResponse.<UserResponse, Void>builder().data(userResponse).build();
     }
 
     @PostMapping()
@@ -56,17 +50,14 @@ public class UserController {
         log.info("Controller: createUser");
         UserResponse userResponse = userService.createUser(request);
         System.out.println("UserResponse: " + userResponse);
-        return ApiResponse.<UserResponse, Void>builder()
-                .data(userResponse)
-                .build();
+        return ApiResponse.<UserResponse, Void>builder().data(userResponse).build();
     }
 
     @PutMapping("/{userId}")
-    ApiResponse<UserResponse, Void> updateUserById(@PathVariable("userId") String userId, @RequestBody @Valid UserUpdateRequest request) {
+    ApiResponse<UserResponse, Void> updateUserById(
+            @PathVariable("userId") String userId, @RequestBody @Valid UserUpdateRequest request) {
         UserResponse userResponse = userService.updateUser(userId, request);
-        return ApiResponse.<UserResponse, Void>builder()
-                .data(userResponse)
-                .build();
+        return ApiResponse.<UserResponse, Void>builder().data(userResponse).build();
     }
 
     @DeleteMapping("/{userId}")

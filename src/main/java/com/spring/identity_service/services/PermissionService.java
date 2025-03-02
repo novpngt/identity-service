@@ -1,5 +1,9 @@
 package com.spring.identity_service.services;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.spring.identity_service.DTOs.requests.PermissionRequest;
 import com.spring.identity_service.DTOs.responses.PermissionResponse;
 import com.spring.identity_service.entities.Permission;
@@ -7,12 +11,10 @@ import com.spring.identity_service.enums.ErrorCode;
 import com.spring.identity_service.exceptions.AppException;
 import com.spring.identity_service.mappers.PermissionMapper;
 import com.spring.identity_service.repositories.PermissionRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -21,14 +23,14 @@ public class PermissionService {
     PermissionRepository permissionRepository;
     PermissionMapper permissionMapper;
 
-    public PermissionResponse create(PermissionRequest request){
+    public PermissionResponse create(PermissionRequest request) {
 
         if (permissionRepository.existsByName(request.getName())) {
             throw new AppException(ErrorCode.PERMISSION_ALREADY_EXISTS);
         }
 
         Permission permission = permissionMapper.toPermission(request);
-        return permissionMapper.toPermissionResponse( permissionRepository.save(permission));
+        return permissionMapper.toPermissionResponse(permissionRepository.save(permission));
     }
 
     public List<PermissionResponse> getPermissions() {

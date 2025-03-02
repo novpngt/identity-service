@@ -1,14 +1,11 @@
 package com.spring.identity_service.services;
 
-import com.spring.identity_service.DTOs.requests.UserCreateRequest;
-import com.spring.identity_service.DTOs.responses.UserResponse;
-import com.spring.identity_service.entities.Role;
-import com.spring.identity_service.entities.User;
-import com.spring.identity_service.enums.ErrorCode;
-import com.spring.identity_service.exceptions.AppException;
-import com.spring.identity_service.repositories.RoleRepository;
-import com.spring.identity_service.repositories.UserRepository;
-import lombok.extern.slf4j.Slf4j;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,12 +17,16 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.Set;
+import com.spring.identity_service.DTOs.requests.UserCreateRequest;
+import com.spring.identity_service.DTOs.responses.UserResponse;
+import com.spring.identity_service.entities.Role;
+import com.spring.identity_service.entities.User;
+import com.spring.identity_service.enums.ErrorCode;
+import com.spring.identity_service.exceptions.AppException;
+import com.spring.identity_service.repositories.RoleRepository;
+import com.spring.identity_service.repositories.UserRepository;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import lombok.extern.slf4j.Slf4j;
 
 @SpringBootTest
 @Slf4j
@@ -34,8 +35,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 public class UserServiceTest {
     @Autowired
     private UserService userService;
+
     @MockitoBean
     private UserRepository userRepository;
+
     @MockitoBean
     private RoleRepository roleRepository;
 
@@ -75,23 +78,23 @@ public class UserServiceTest {
 
     @Test
     void createUser_validRequest_success() {
-        //GIVEN
+        // GIVEN
         Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(false);
         Mockito.when(userRepository.save(any())).thenReturn(user);
         Mockito.when(roleRepository.findById(anyString())).thenReturn(Optional.ofNullable(role));
-        //WHEN
+        // WHEN
         var response = userService.createUser(userRequest);
-        //THEN
+        // THEN
         Assertions.assertEquals(userResponse.getUsername(), response.getUsername());
     }
 
     @Test
     void createUser_userExisted_fail() {
-        //GIVEN
+        // GIVEN
         Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(true);
-        //WHEN
-        var exception = Assertions.assertThrows(AppException.class, ()->userService.createUser(userRequest));
-        //THEN
+        // WHEN
+        var exception = Assertions.assertThrows(AppException.class, () -> userService.createUser(userRequest));
+        // THEN
         Assertions.assertEquals(exception.getErrorCode().getMessage(), ErrorCode.USER_ALREADY_EXISTS.getMessage());
         Assertions.assertEquals(exception.getErrorCode().getCode(), ErrorCode.USER_ALREADY_EXISTS.getCode());
     }
@@ -107,7 +110,7 @@ public class UserServiceTest {
     @WithMockUser(username = "user")
     void getInfo_userNotFound_fail() {
         Mockito.when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
-        var exception = Assertions.assertThrows(AppException.class, ()-> userService.getMyInfo());
+        var exception = Assertions.assertThrows(AppException.class, () -> userService.getMyInfo());
         Assertions.assertEquals(exception.getErrorCode().getCode(), ErrorCode.USER_NOT_FOUND.getCode());
         Assertions.assertEquals(exception.getErrorCode().getMessage(), ErrorCode.USER_NOT_FOUND.getMessage());
     }

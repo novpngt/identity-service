@@ -1,10 +1,9 @@
 package com.spring.identity_service.DTOs.requests;
 
-import com.spring.identity_service.entities.Permission;
+import java.util.Set;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Set;
 
 @Data
 @Builder

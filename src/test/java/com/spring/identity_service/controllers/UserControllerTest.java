@@ -1,15 +1,9 @@
 package com.spring.identity_service.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.spring.identity_service.DTOs.requests.UserCreateRequest;
-import com.spring.identity_service.DTOs.responses.UserResponse;
-import com.spring.identity_service.enums.ErrorCode;
-import com.spring.identity_service.services.UserService;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +16,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.time.LocalDate;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.spring.identity_service.DTOs.requests.UserCreateRequest;
+import com.spring.identity_service.DTOs.responses.UserResponse;
+import com.spring.identity_service.enums.ErrorCode;
+import com.spring.identity_service.services.UserService;
+
+import lombok.extern.slf4j.Slf4j;
 
 @SpringBootTest
 @Slf4j
@@ -64,20 +65,12 @@ public class UserControllerTest {
 
         Mockito.when(userService.createUser(ArgumentMatchers.any())).thenReturn(userResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(requestContent))
-                .andExpect(MockMvcResultMatchers
-                        .status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("code")
-                        .value(0))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("data.username")
-                        .value("user05"))
-        ;
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("data.username").value("user05"));
     }
 
     @Test
@@ -89,19 +82,12 @@ public class UserControllerTest {
 
         Mockito.when(userService.createUser(ArgumentMatchers.any())).thenReturn(userResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(requestContent))
-                .andExpect(MockMvcResultMatchers
-                        .status()
-                        .isBadRequest())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("code")
-                        .value(1003))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("message")
-                        .value(ErrorCode.USER_VALIDATION_ERROR.getMessage()))
-        ;
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("code").value(1003))
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("message").value(ErrorCode.USER_VALIDATION_ERROR.getMessage()));
     }
 }

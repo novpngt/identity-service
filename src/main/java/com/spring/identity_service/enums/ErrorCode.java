@@ -1,16 +1,12 @@
 package com.spring.identity_service.enums;
 
-import com.spring.identity_service.validators.DOBConstraint;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-
-import java.time.LocalDate;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -34,7 +30,6 @@ public enum ErrorCode {
     INVALID_FIRST_NAME(1016, "Please provide your first name. It cannot be left blank.", HttpStatus.BAD_REQUEST),
     INVALID_LAST_NAME(1017, "Please provide your last name. It cannot be left blank.", HttpStatus.BAD_REQUEST),
     INVALID_AGE(1018, "Minimum age must be greater than or equal to {min}", HttpStatus.BAD_REQUEST),
-
     ;
 
     int code;

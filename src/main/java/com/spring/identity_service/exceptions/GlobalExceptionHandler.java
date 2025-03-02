@@ -1,10 +1,11 @@
 package com.spring.identity_service.exceptions;
 
-import com.nimbusds.jose.JOSEException;
-import com.spring.identity_service.DTOs.responses.ApiResponse;
-import com.spring.identity_service.enums.ErrorCode;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
+
 import jakarta.validation.ConstraintViolation;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
+import com.nimbusds.jose.JOSEException;
+import com.spring.identity_service.DTOs.responses.ApiResponse;
+import com.spring.identity_service.enums.ErrorCode;
+
+import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
 @Slf4j
@@ -37,16 +40,13 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(errorCode.getMessage());
-        return ResponseEntity
-                .status(errorCode.getHttpStatusCode())
-                .body(apiResponse);
+        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
     ResponseEntity<ApiResponse> accessDeniedExceptionHandler() {
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED_ERROR;
-        return ResponseEntity
-                .status(errorCode.getHttpStatusCode())
+        return ResponseEntity.status(errorCode.getHttpStatusCode())
                 .body(ApiResponse.builder()
                         .message(errorCode.getMessage())
                         .code(errorCode.getCode())
@@ -112,7 +112,7 @@ public class GlobalExceptionHandler {
         return new ValidationError(fieldError.getField(), message);
     }
 
-    private String mapAttribute(String message, Map<String, Object> attributes){
+    private String mapAttribute(String message, Map<String, Object> attributes) {
         String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
         String maxValue = String.valueOf(attributes.get(MAX_ATTRIBUTE));
         return message.replace("{min}", minValue).replace("{max}", maxValue);

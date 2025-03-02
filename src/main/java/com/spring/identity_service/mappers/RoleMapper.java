@@ -1,17 +1,20 @@
 package com.spring.identity_service.mappers;
 
-import com.spring.identity_service.DTOs.requests.RoleRequest;
-import com.spring.identity_service.DTOs.responses.RoleResponse;
-import com.spring.identity_service.entities.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import com.spring.identity_service.DTOs.requests.RoleRequest;
+import com.spring.identity_service.DTOs.responses.RoleResponse;
+import com.spring.identity_service.entities.Role;
+
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
     @Mapping(target = "permissions", ignore = true)
-    Role toRole (RoleRequest roleRequest);
-    RoleResponse toRoleResponse (Role role);
+    Role toRole(RoleRequest roleRequest);
+
+    RoleResponse toRoleResponse(Role role);
+
     @Mapping(target = "permissions", ignore = true)
-    void updateRole (@MappingTarget Role role, RoleRequest roleRequest);
+    void updateRole(@MappingTarget Role role, RoleRequest roleRequest);
 }

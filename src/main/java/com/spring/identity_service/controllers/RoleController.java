@@ -1,17 +1,18 @@
 package com.spring.identity_service.controllers;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.spring.identity_service.DTOs.requests.RoleRequest;
 import com.spring.identity_service.DTOs.responses.ApiResponse;
-import com.spring.identity_service.DTOs.responses.PermissionResponse;
 import com.spring.identity_service.DTOs.responses.RoleResponse;
 import com.spring.identity_service.services.RoleService;
+
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/roles")
@@ -22,11 +23,12 @@ public class RoleController {
     RoleService roleService;
 
     @PostMapping()
-    ApiResponse<RoleResponse, Void> create(@RequestBody RoleRequest request){
+    ApiResponse<RoleResponse, Void> create(@RequestBody RoleRequest request) {
         return ApiResponse.<RoleResponse, Void>builder()
                 .data(roleService.create(request))
                 .build();
     }
+
     @GetMapping
     ApiResponse<List<RoleResponse>, Void> getRoles() {
         return ApiResponse.<List<RoleResponse>, Void>builder()

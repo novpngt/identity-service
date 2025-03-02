@@ -1,22 +1,23 @@
 package com.spring.identity_service.services;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.spring.identity_service.DTOs.requests.RoleRequest;
 import com.spring.identity_service.DTOs.responses.RoleResponse;
-import com.spring.identity_service.entities.Permission;
 import com.spring.identity_service.entities.Role;
 import com.spring.identity_service.enums.ErrorCode;
 import com.spring.identity_service.exceptions.AppException;
 import com.spring.identity_service.mappers.RoleMapper;
 import com.spring.identity_service.repositories.PermissionRepository;
 import com.spring.identity_service.repositories.RoleRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -26,7 +27,7 @@ public class RoleService {
     RoleMapper roleMapper;
     PermissionRepository permissionRepository;
 
-    public RoleResponse create(RoleRequest request){
+    public RoleResponse create(RoleRequest request) {
         if (roleRepository.existsByName(request.getName())) {
             throw new AppException(ErrorCode.ROLE_ALREADY_EXISTS);
         }
@@ -39,12 +40,12 @@ public class RoleService {
         return roleMapper.toRoleResponse(roleRepository.save(role));
     }
 
-    public List<RoleResponse> getRoles(){
+    public List<RoleResponse> getRoles() {
         var roles = roleRepository.findAll();
         return roles.stream().map(role -> roleMapper.toRoleResponse(role)).collect(Collectors.toList());
     }
 
-    public String delete(String name){
+    public String delete(String name) {
         if (!roleRepository.existsByName(name)) {
             return "Failed";
         }
