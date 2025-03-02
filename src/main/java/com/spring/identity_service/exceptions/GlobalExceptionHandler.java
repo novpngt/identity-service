@@ -27,24 +27,24 @@ public class GlobalExceptionHandler {
     private static final String MAX_ATTRIBUTE = "max";
 
     @ExceptionHandler(value = RuntimeException.class)
-    ResponseEntity<ApiResponse> runTimeExceptionHandler(RuntimeException e) {
-        ApiResponse apiResponse = new ApiResponse();
+    ResponseEntity<ApiResponse<Object,Object>> runTimeExceptionHandler(RuntimeException e) {
+        ApiResponse<Object,Object> apiResponse = new ApiResponse<>();
         apiResponse.setCode(ErrorCode.UNCATEGORIZED_ERROR.getCode());
         apiResponse.setMessage(ErrorCode.UNCATEGORIZED_ERROR.getMessage() + ": " + e.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
     @ExceptionHandler(value = AppException.class)
-    ResponseEntity<ApiResponse> appExceptionHandler(AppException e) {
+    ResponseEntity<ApiResponse<Object,Object>> appExceptionHandler(AppException e) {
         ErrorCode errorCode = e.getErrorCode();
-        ApiResponse apiResponse = new ApiResponse();
+        ApiResponse<Object,Object> apiResponse = new ApiResponse<>();
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(errorCode.getMessage());
         return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
-    ResponseEntity<ApiResponse> accessDeniedExceptionHandler() {
+    ResponseEntity<ApiResponse<Object,Object>> accessDeniedExceptionHandler() {
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED_ERROR;
         return ResponseEntity.status(errorCode.getHttpStatusCode())
                 .body(ApiResponse.builder()
@@ -54,38 +54,38 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = ParseException.class)
-    ResponseEntity<ApiResponse> handleParseException(ParseException e) {
-        ApiResponse apiResponse = new ApiResponse();
+    ResponseEntity<ApiResponse<Object,Object>> handleParseException(ParseException e) {
+        ApiResponse<Object,Object> apiResponse = new ApiResponse<>();
         apiResponse.setCode(ErrorCode.INVALID_JWT_TOKEN.getCode());
         apiResponse.setMessage(ErrorCode.INVALID_JWT_TOKEN.getMessage() + ": " + e.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
     @ExceptionHandler(value = JOSEException.class)
-    ResponseEntity<ApiResponse> handleJOSEException(JOSEException e) {
-        ApiResponse apiResponse = new ApiResponse();
+    ResponseEntity<ApiResponse<Object,Object>> handleJOSEException(JOSEException e) {
+        ApiResponse<Object,Object> apiResponse = new ApiResponse<>();
         apiResponse.setCode(ErrorCode.JWT_VERIFICATION_FAILED.getCode());
         apiResponse.setMessage(ErrorCode.JWT_VERIFICATION_FAILED.getMessage() + ": " + e.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    ResponseEntity<ApiResponse> handleMissingRequestBody(HttpMessageNotReadableException e) {
-        ApiResponse apiResponse = new ApiResponse();
+    ResponseEntity<ApiResponse<Object,Object>> handleMissingRequestBody(HttpMessageNotReadableException e) {
+        ApiResponse<Object,Object> apiResponse = new ApiResponse<>();
         apiResponse.setCode(ErrorCode.UNREADABLE_MESSAGE.getCode());
         apiResponse.setMessage(ErrorCode.UNREADABLE_MESSAGE.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    ResponseEntity<ApiResponse> handleValidationException(MethodArgumentNotValidException ex) {
+    ResponseEntity<ApiResponse<Object,Object>> handleValidationException(MethodArgumentNotValidException ex) {
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
 
         List<ValidationError> validationErrors = fieldErrors.stream()
-                .map(fieldError -> convertToValidationError(fieldError))
+                .map(this::convertToValidationError)
                 .toList();
 
-        ApiResponse response = new ApiResponse();
+        ApiResponse<Object,Object> response = new ApiResponse<>();
         ErrorCode errorCode = ErrorCode.USER_VALIDATION_ERROR;
         response.setCode(errorCode.getCode());
         response.setMessage(errorCode.getMessage());
@@ -101,13 +101,19 @@ public class GlobalExceptionHandler {
 
         try {
             errorCode = ErrorCode.valueOf(enumKey);
-            var constraintViolation = fieldError.unwrap(ConstraintViolation.class);
+            ConstraintViolation<?> constraintViolation = fieldError.unwrap(ConstraintViolation.class);
             attributes = constraintViolation.getConstraintDescriptor().getAttributes();
             log.info("Validation attributes: {}", attributes);
         } catch (IllegalArgumentException ignored) {
         }
 
-        String message = mapAttribute(errorCode.getMessage(), attributes);
+        String message;
+
+        if (attributes != null) {
+            message  = mapAttribute(errorCode.getMessage(), attributes);
+        } else {
+            message = ErrorCode.UNCATEGORIZED_ERROR.getMessage();
+        }
 
         return new ValidationError(fieldError.getField(), message);
     }

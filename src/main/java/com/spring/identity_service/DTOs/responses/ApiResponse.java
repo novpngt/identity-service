@@ -11,12 +11,12 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApiResponse<DataType, ErrorType> {
+public class ApiResponse<T, E> {
     int code;
 
     @Builder.Default
     String message = "success";
 
-    DataType data;
-    ErrorType errors;
+    T data;
+    E errors;
 }

@@ -25,10 +25,10 @@ import lombok.experimental.NonFinal;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
     @NonFinal
-    String[] GET_PUBLIC_ENDPOINTS = {"/swagger-ui/**", "/v3/api-docs/**"};
+    static String[] GET_PUBLIC_ENDPOINTS = {"/swagger-ui/**", "/v3/api-docs/**"};
 
     @NonFinal
-    String[] POST_PUBLIC_ENDPOINTS = {
+    static String[] POST_PUBLIC_ENDPOINTS = {
         "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
     };
 
