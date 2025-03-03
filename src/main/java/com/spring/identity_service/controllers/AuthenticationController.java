@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimbusds.jose.JOSEException;
-import com.spring.identity_service.DTOs.requests.AuthenticationRequest;
-import com.spring.identity_service.DTOs.requests.IntrospectRequest;
-import com.spring.identity_service.DTOs.requests.LogoutRequest;
-import com.spring.identity_service.DTOs.requests.RefreshTokenRequest;
-import com.spring.identity_service.DTOs.responses.ApiResponse;
-import com.spring.identity_service.DTOs.responses.AuthenticationResponse;
-import com.spring.identity_service.DTOs.responses.IntrospectResponse;
-import com.spring.identity_service.DTOs.responses.LogoutResponse;
+import com.spring.identity_service.dtos.requests.AuthenticationRequest;
+import com.spring.identity_service.dtos.requests.IntrospectRequest;
+import com.spring.identity_service.dtos.requests.LogoutRequest;
+import com.spring.identity_service.dtos.requests.RefreshTokenRequest;
+import com.spring.identity_service.dtos.responses.ApiResponse;
+import com.spring.identity_service.dtos.responses.AuthenticationResponse;
+import com.spring.identity_service.dtos.responses.IntrospectResponse;
+import com.spring.identity_service.dtos.responses.LogoutResponse;
 import com.spring.identity_service.services.AuthenticationService;
 
 import lombok.AccessLevel;

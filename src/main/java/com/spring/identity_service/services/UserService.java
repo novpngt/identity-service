@@ -11,9 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.spring.identity_service.DTOs.requests.UserCreateRequest;
-import com.spring.identity_service.DTOs.requests.UserUpdateRequest;
-import com.spring.identity_service.DTOs.responses.UserResponse;
+import com.spring.identity_service.dtos.requests.UserCreateRequest;
+import com.spring.identity_service.dtos.requests.UserUpdateRequest;
+import com.spring.identity_service.dtos.responses.UserResponse;
 import com.spring.identity_service.entities.Role;
 import com.spring.identity_service.entities.User;
 import com.spring.identity_service.enums.ErrorCode;

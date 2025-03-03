@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.spring.identity_service.DTOs.requests.RoleRequest;
-import com.spring.identity_service.DTOs.responses.RoleResponse;
+import com.spring.identity_service.dtos.requests.RoleRequest;
+import com.spring.identity_service.dtos.responses.RoleResponse;
 import com.spring.identity_service.entities.Role;
 import com.spring.identity_service.enums.ErrorCode;
 import com.spring.identity_service.exceptions.AppException;

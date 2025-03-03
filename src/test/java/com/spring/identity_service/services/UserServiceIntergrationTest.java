@@ -16,8 +16,8 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.spring.identity_service.DTOs.requests.UserCreateRequest;
-import com.spring.identity_service.DTOs.responses.UserResponse;
+import com.spring.identity_service.dtos.requests.UserCreateRequest;
+import com.spring.identity_service.dtos.responses.UserResponse;
 import com.spring.identity_service.entities.Role;
 import com.spring.identity_service.entities.User;
 import com.spring.identity_service.enums.ErrorCode;

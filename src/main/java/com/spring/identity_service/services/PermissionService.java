@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.spring.identity_service.DTOs.requests.PermissionRequest;
-import com.spring.identity_service.DTOs.responses.PermissionResponse;
+import com.spring.identity_service.dtos.requests.PermissionRequest;
+import com.spring.identity_service.dtos.responses.PermissionResponse;
 import com.spring.identity_service.entities.Permission;
 import com.spring.identity_service.enums.ErrorCode;
 import com.spring.identity_service.exceptions.AppException;

@@ -30,6 +30,7 @@ public enum ErrorCode {
     INVALID_FIRST_NAME(1016, "Please provide your first name. It cannot be left blank.", HttpStatus.BAD_REQUEST),
     INVALID_LAST_NAME(1017, "Please provide your last name. It cannot be left blank.", HttpStatus.BAD_REQUEST),
     INVALID_AGE(1018, "Minimum age must be greater than or equal to {min}", HttpStatus.BAD_REQUEST),
+    BAD_CREDENTIALS(1019, "Bad credentials", HttpStatus.UNAUTHORIZED),
     ;
 
     int code;

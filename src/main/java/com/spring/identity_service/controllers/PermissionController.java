@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.spring.identity_service.DTOs.requests.PermissionRequest;
-import com.spring.identity_service.DTOs.responses.ApiResponse;
-import com.spring.identity_service.DTOs.responses.PermissionResponse;
+import com.spring.identity_service.dtos.requests.PermissionRequest;
+import com.spring.identity_service.dtos.responses.ApiResponse;
+import com.spring.identity_service.dtos.responses.PermissionResponse;
 import com.spring.identity_service.services.PermissionService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

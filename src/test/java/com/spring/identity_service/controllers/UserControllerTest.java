@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.spring.identity_service.DTOs.requests.UserCreateRequest;
-import com.spring.identity_service.DTOs.responses.UserResponse;
+import com.spring.identity_service.dtos.requests.UserCreateRequest;
+import com.spring.identity_service.dtos.responses.UserResponse;
 import com.spring.identity_service.enums.ErrorCode;
 import com.spring.identity_service.services.UserService;
 

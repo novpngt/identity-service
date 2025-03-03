@@ -1,4 +1,4 @@
-package com.spring.identity_service.DTOs.responses;
+package com.spring.identity_service.dtos.requests;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PermissionResponse {
-    String name;
-    String description;
+public class RefreshTokenRequest {
+    String token;
 }

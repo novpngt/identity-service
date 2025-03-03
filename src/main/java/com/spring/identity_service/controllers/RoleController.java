@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.spring.identity_service.DTOs.requests.RoleRequest;
-import com.spring.identity_service.DTOs.responses.ApiResponse;
-import com.spring.identity_service.DTOs.responses.RoleResponse;
+import com.spring.identity_service.dtos.requests.RoleRequest;
+import com.spring.identity_service.dtos.responses.ApiResponse;
+import com.spring.identity_service.dtos.responses.RoleResponse;
 import com.spring.identity_service.services.RoleService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

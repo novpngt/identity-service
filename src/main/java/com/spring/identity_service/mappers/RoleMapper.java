@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import com.spring.identity_service.DTOs.requests.RoleRequest;
-import com.spring.identity_service.DTOs.responses.RoleResponse;
+import com.spring.identity_service.dtos.requests.RoleRequest;
+import com.spring.identity_service.dtos.responses.RoleResponse;
 import com.spring.identity_service.entities.Role;
 
 @Mapper(componentModel = "spring")

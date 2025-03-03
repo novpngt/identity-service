@@ -11,7 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.identity_service.DTOs.responses.ApiResponse;
+import com.spring.identity_service.dtos.responses.ApiResponse;
 import com.spring.identity_service.enums.ErrorCode;
 
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {

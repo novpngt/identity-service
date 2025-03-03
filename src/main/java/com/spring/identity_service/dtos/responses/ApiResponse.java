@@ -1,4 +1,4 @@
-package com.spring.identity_service.DTOs.responses;
+package com.spring.identity_service.dtos.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

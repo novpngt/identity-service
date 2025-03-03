@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.nimbusds.jose.JOSEException;
-import com.spring.identity_service.DTOs.responses.ApiResponse;
+import com.spring.identity_service.dtos.responses.ApiResponse;
 import com.spring.identity_service.enums.ErrorCode;
 
 import lombok.extern.slf4j.Slf4j;

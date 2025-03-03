@@ -1,6 +1,7 @@
-package com.spring.identity_service.DTOs.requests;
+package com.spring.identity_service.dtos.requests;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -15,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserCreateRequest {
+public class UserUpdateRequest {
     @Size(min = 6, max = 20, message = "INVALID_USERNAME")
     String username;
 
@@ -30,4 +31,6 @@ public class UserCreateRequest {
 
     @DOBConstraint(min = 18, message = "INVALID_AGE")
     LocalDate birthDate;
+
+    Set<String> roles;
 }

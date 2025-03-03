@@ -1,4 +1,4 @@
-package com.spring.identity_service.DTOs.requests;
+package com.spring.identity_service.dtos.responses;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class IntrospectRequest {
+public class AuthenticationResponse {
     String token;
+    boolean authenticated;
 }

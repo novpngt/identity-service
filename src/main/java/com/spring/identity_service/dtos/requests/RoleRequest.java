@@ -1,4 +1,4 @@
-package com.spring.identity_service.DTOs.requests;
+package com.spring.identity_service.dtos.requests;
 
 import java.util.Set;
 

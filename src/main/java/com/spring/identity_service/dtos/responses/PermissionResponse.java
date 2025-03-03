@@ -1,8 +1,4 @@
-package com.spring.identity_service.DTOs.responses;
-
-import java.util.Set;
-
-import com.spring.identity_service.entities.Permission;
+package com.spring.identity_service.dtos.responses;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,8 +8,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleResponse {
+public class PermissionResponse {
     String name;
     String description;
-    Set<Permission> permissions;
 }

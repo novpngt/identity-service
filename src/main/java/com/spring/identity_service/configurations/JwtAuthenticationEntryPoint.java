@@ -11,7 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.identity_service.DTOs.responses.ApiResponse;
+import com.spring.identity_service.dtos.responses.ApiResponse;
 import com.spring.identity_service.enums.ErrorCode;
 
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
