@@ -18,7 +18,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.spring.identity_service.dtos.requests.UserCreateRequest;
 import com.spring.identity_service.dtos.responses.UserResponse;
-import com.spring.identity_service.entities.Role;
 import com.spring.identity_service.entities.User;
 import com.spring.identity_service.enums.ErrorCode;
 import com.spring.identity_service.exceptions.AppException;
@@ -30,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AutoConfigureMockMvc
 @Testcontainers
-public class UserServiceIntergrationTest {
+public class UserServiceIntegrationTest {
     @Container
     static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:latest");
 
@@ -52,12 +51,15 @@ public class UserServiceIntergrationTest {
     private UserCreateRequest userRequest;
     private UserResponse userResponse;
     private User user;
-    private Role role;
 
     @BeforeEach
     public void initData() {
+        userRepository.deleteAll();
+
+        String username = "test_user";
+
         userRequest = UserCreateRequest.builder()
-                .username("user05")
+                .username(username)
                 .password("123456")
                 .lastName("userLN5")
                 .firstName("userFN5")
@@ -80,7 +82,14 @@ public class UserServiceIntergrationTest {
                 .birthDate(LocalDate.of(2000, 2, 2))
                 .build();
 
-        role = Role.builder().name("USER").description("USER ROLE").build();
+        User existingUser = User.builder()
+                .username(username)
+                .password("123456")
+                .lastName("userLN")
+                .firstName("userFN")
+                .birthDate(LocalDate.of(2000, 2, 2))
+                .build();
+        userRepository.saveAndFlush(existingUser);
     }
 
     @Test
@@ -96,20 +105,17 @@ public class UserServiceIntergrationTest {
     @Test
     @Transactional
     void createUser_userExisted_fail() {
-        // GIVEN
-        User existingUser = User.builder()
-                .username(userRequest.getUsername())
-                .password("hashed-password")
-                .lastName("userLN")
-                .firstName("userFN")
-                .birthDate(LocalDate.of(2000, 2, 2))
-                .build();
-        userRepository.save(existingUser);
         // WHEN
         var exception = Assertions.assertThrows(AppException.class, () -> userService.createUser(userRequest));
+
         // THEN
-        Assertions.assertEquals(exception.getErrorCode().getMessage(), ErrorCode.USER_ALREADY_EXISTS.getMessage());
-        Assertions.assertEquals(exception.getErrorCode().getCode(), ErrorCode.USER_ALREADY_EXISTS.getCode());
+        Assertions.assertEquals(
+                ErrorCode.USER_ALREADY_EXISTS.getMessage(),
+                exception.getErrorCode().getMessage());
+        Assertions.assertEquals(
+                ErrorCode.USER_ALREADY_EXISTS.getCode(),
+                exception.getErrorCode().getCode());
+        Assertions.assertEquals(1, userRepository.count());
     }
 
     @Test

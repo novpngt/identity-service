@@ -195,6 +195,7 @@ public class AuthenticationService {
     }
 
     private String generateToken(User user) {
+        log.info("KEY: {}", SIGNER_KEY);
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()

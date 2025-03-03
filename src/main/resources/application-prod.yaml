@@ -1,0 +1,4 @@
+jwt:
+  signer-key: ${SIGNER_KEY}
+  token-ttl: 7200
+  token-grace-period: 14400

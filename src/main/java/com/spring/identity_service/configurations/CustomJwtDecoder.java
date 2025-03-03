@@ -1,8 +1,5 @@
 package com.spring.identity_service.configurations;
 
-import com.spring.identity_service.enums.ErrorCode;
-import com.spring.identity_service.exceptions.AppException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -11,12 +8,14 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
 
+import com.spring.identity_service.exceptions.AppException;
 import com.spring.identity_service.services.AuthenticationService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

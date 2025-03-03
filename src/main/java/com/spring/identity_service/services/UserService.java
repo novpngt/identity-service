@@ -39,7 +39,6 @@ public class UserService {
     RoleRepository roleRepository;
 
     public UserResponse createUser(UserCreateRequest request) {
-
         User user = userMapper.toUser(request);
         Role role = roleRepository.findById("USER").orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         user.setRoles(Set.of(role));

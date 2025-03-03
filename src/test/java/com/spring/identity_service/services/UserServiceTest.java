@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -32,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AutoConfigureMockMvc
 @TestPropertySource("/test.properties")
-public class UserServiceTest {
+class UserServiceTest {
     @Autowired
     private UserService userService;
 
@@ -49,6 +50,7 @@ public class UserServiceTest {
 
     @BeforeEach
     public void initData() {
+
         userRequest = UserCreateRequest.builder()
                 .username("user05")
                 .password("123456")
@@ -79,7 +81,6 @@ public class UserServiceTest {
     @Test
     void createUser_validRequest_success() {
         // GIVEN
-        Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(false);
         Mockito.when(userRepository.save(any())).thenReturn(user);
         Mockito.when(roleRepository.findById(anyString())).thenReturn(Optional.ofNullable(role));
         // WHEN
@@ -90,13 +91,32 @@ public class UserServiceTest {
 
     @Test
     void createUser_userExisted_fail() {
-        // GIVEN
-        Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(true);
         // WHEN
+        Mockito.when(roleRepository.findById("USER")).thenReturn(Optional.ofNullable(role));
+        Mockito.when(userRepository.save(any())).thenThrow(new DataIntegrityViolationException("User already exists"));
         var exception = Assertions.assertThrows(AppException.class, () -> userService.createUser(userRequest));
         // THEN
-        Assertions.assertEquals(exception.getErrorCode().getMessage(), ErrorCode.USER_ALREADY_EXISTS.getMessage());
-        Assertions.assertEquals(exception.getErrorCode().getCode(), ErrorCode.USER_ALREADY_EXISTS.getCode());
+        Assertions.assertEquals(
+                ErrorCode.USER_ALREADY_EXISTS.getMessage(),
+                exception.getErrorCode().getMessage());
+        Assertions.assertEquals(
+                ErrorCode.USER_ALREADY_EXISTS.getCode(),
+                exception.getErrorCode().getCode());
+    }
+
+    @Test
+    void createUser_roleNotFound_fail() {
+        // Setup: configure roleRepository to return empty Optional for "USER" role
+        Mockito.when(roleRepository.findById("USER")).thenReturn(Optional.empty());
+
+        // WHEN
+        var exception = Assertions.assertThrows(AppException.class, () -> userService.createUser(userRequest));
+
+        // THEN
+        Assertions.assertEquals(
+                ErrorCode.ROLE_NOT_FOUND.getMessage(), exception.getErrorCode().getMessage());
+        Assertions.assertEquals(
+                ErrorCode.ROLE_NOT_FOUND.getCode(), exception.getErrorCode().getCode());
     }
 
     @Test
