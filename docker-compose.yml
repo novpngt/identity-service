@@ -1,0 +1,42 @@
+#using external database
+services:
+  app:
+    image: app:latest
+    build: .
+    networks:
+     - id-service-app-network
+    environment:
+      - DBMS_CONNECTION=jdbc:mysql://mysql-spring-boot:3306/identity_service
+      - DBMS_USERNAME=root
+      - DBMS_PASSWORD=root
+    ports:
+      - "8080:8080"
+networks:
+  id-service-app-network:
+    external: true
+
+#using internal database
+#services:
+#  app:
+#    image: app:latest
+#    build: .
+#    networks:
+#      - id-service-app-network
+#    depends_on:
+#      - mysql
+#    environment:
+#      - DBMS_CONNECTION=jdbc:mysql://mysql:3306/identity_service
+#      - DBMS_USERNAME=root
+#      - DBMS_PASSWORD=root
+#    ports:
+#      - "8080:8080"
+#  mysql:
+#    image: mysql:latest
+#    networks:
+#      - id-service-app-network
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=root
+#      - MYSQL_DATABASE=identity_service
+#networks:
+#  id-service-app-network:
+#    driver: bridge

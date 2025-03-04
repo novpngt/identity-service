@@ -5,9 +5,9 @@ server:
 
 spring:
   datasource:
-    url: ${DB_CONNECTION:jdbc:mysql://localhost:3306/identity_service}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/identity_service}
+    username: ${DBMS_USERNAME:root}
+    password: ${DBMS_PASSWORD:root}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
