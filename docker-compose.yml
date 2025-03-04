@@ -20,7 +20,7 @@ services:
   app:
     image: identity-service:0.0.1
     build:
-        context: .
+      context: .
     networks:
       - id-service-app-network
     depends_on:
