@@ -1,42 +1,50 @@
 #using external database
-services:
-  app:
-    image: app:latest
-    build: .
-    networks:
-     - id-service-app-network
-    environment:
-      - DBMS_CONNECTION=jdbc:mysql://mysql-spring-boot:3306/identity_service
-      - DBMS_USERNAME=root
-      - DBMS_PASSWORD=root
-    ports:
-      - "8080:8080"
-networks:
-  id-service-app-network:
-    external: true
-
-#using internal database
 #services:
 #  app:
 #    image: app:latest
 #    build: .
 #    networks:
-#      - id-service-app-network
-#    depends_on:
-#      - mysql
+#     - id-service-app-network
 #    environment:
-#      - DBMS_CONNECTION=jdbc:mysql://mysql:3306/identity_service
+#      - DBMS_CONNECTION=jdbc:mysql://mysql-spring-boot:3306/identity_service
 #      - DBMS_USERNAME=root
 #      - DBMS_PASSWORD=root
 #    ports:
 #      - "8080:8080"
-#  mysql:
-#    image: mysql:latest
-#    networks:
-#      - id-service-app-network
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=root
-#      - MYSQL_DATABASE=identity_service
 #networks:
 #  id-service-app-network:
-#    driver: bridge
+#    external: true
+
+#using internal database
+services:
+  app:
+    image: identity-service:0.0.1
+    build:
+        context: .
+    networks:
+      - id-service-app-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - DBMS_CONNECTION=${DBMS_CONNECTION}
+      - DBMS_USERNAME=${DBMS_USERNAME}
+      - DBMS_PASSWORD=${DBMS_PASSWORD}
+      - SIGNER_KEY=${SIGNER_KEY}
+    ports:
+      - "8080:8080"
+  mysql:
+    image: mysql:latest
+    networks:
+      - id-service-app-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=identity_service
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+networks:
+  id-service-app-network:
+    driver: bridge

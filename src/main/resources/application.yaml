@@ -15,6 +15,6 @@ spring:
     show-sql: true
 
 jwt:
-  signer-key: 2cNxH05otNiEU4dU4XtoxqD1aKYBVtoW0PCYOYDIzcYswPK4j1ypQw8uUbQEIxKx
+  signer-key: ${SIGNER_KEY}
   token-ttl: 3600
   token-grace-period: 7200

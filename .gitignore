@@ -1,3 +1,6 @@
+# Sensitive configuration files
+.env
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
